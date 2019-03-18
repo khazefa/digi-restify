@@ -94,7 +94,7 @@ $config['enable_emulate_request'] = TRUE;
 | e.g: My Secret REST API
 |
 */
-$config['rest_realm'] = 'REST API';
+$config['rest_realm'] = 'XxGAL1A*&SJjZBZ6';
 
 /*
 |--------------------------------------------------------------------------
@@ -110,7 +110,7 @@ $config['rest_realm'] = 'REST API';
 |           authorization key
 |
 */
-$config['rest_auth'] = FALSE;
+$config['rest_auth'] = 'digest';
 
 /*
 |--------------------------------------------------------------------------
@@ -126,7 +126,7 @@ $config['rest_auth'] = FALSE;
 | Note: If 'rest_auth' is set to 'session' then change 'auth_source' to the name of the session variable
 |
 */
-$config['auth_source'] = 'ldap';
+$config['auth_source'] = '';
 
 /*
 |--------------------------------------------------------------------------
