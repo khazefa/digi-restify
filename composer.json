@@ -1,0 +1,37 @@
+{
+	"description": "REST Server for the CodeIgniter and another small to medium related PHP projects",
+	"name": "khazefa/digi-restify",
+	"type": "project",
+	"homepage": "https://digifreneur.com",
+	"authors": [
+		{
+			"name": "Sigit Prayitno",
+			"role": "Developer"
+		}
+	],
+	"license": "MIT",
+	"support": {
+		"source": "https://github.com/bcit-ci/CodeIgniter"
+	},
+	"require": {
+		"php": ">=5.4.0",
+		"codeigniter/framework": "^3.1.4",
+		"chriskacerguis/codeigniter-restserver": "^3.0"
+	},
+	"suggest": {
+		"paragonie/random_compat": "Provides better randomness in PHP 5.x"
+	},
+	"require-dev": {
+		"mikey179/vfsstream": "1.1.*",
+		"phpunit/phpunit": "4.* || 5.*"
+	},
+	"autoload": {
+		"classmap": [
+			"application/libraries/Format.php",
+			"application/libraries/REST_Controller.php"
+		],
+		"psr-4" : {
+			"Restserver\\Libraries\\" : "application/libraries/"
+		}
+	}
+}
