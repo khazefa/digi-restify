@@ -299,7 +299,7 @@ $config['rest_database_group'] = 'default';
 | The table name in your database that stores API keys
 |
 */
-$config['rest_keys_table'] = 'keys';
+$config['rest_keys_table'] = 'api_keys';
 
 /*
 |--------------------------------------------------------------------------
@@ -311,7 +311,7 @@ $config['rest_keys_table'] = 'keys';
 | column name see 'rest_key_column'
 |
 | Default table schema:
-|   CREATE TABLE `keys` (
+|   CREATE TABLE `api_keys` (
 |       `id` INT(11) NOT NULL AUTO_INCREMENT,
 |       `user_id` INT(11) NOT NULL,
 |       `key` VARCHAR(40) NOT NULL,
@@ -389,7 +389,7 @@ $config['rest_key_name'] = 'Yiggber0z';
 | $this->method array for each controller
 |
 | Default table schema:
-|   CREATE TABLE `logs` (
+|   CREATE TABLE `api_logs` (
 |       `id` INT(11) NOT NULL AUTO_INCREMENT,
 |       `uri` VARCHAR(255) NOT NULL,
 |       `method` VARCHAR(6) NOT NULL,
@@ -415,7 +415,7 @@ $config['rest_enable_logging'] = TRUE;
 | table name to match e.g. my_logs
 |
 */
-$config['rest_logs_table'] = 'logs';
+$config['rest_logs_table'] = 'api_logs';
 
 /*
 |--------------------------------------------------------------------------
@@ -471,7 +471,7 @@ $config['rest_logs_json_params'] = FALSE;
 | $this->method array in each controller
 |
 | Default table schema:
-|   CREATE TABLE `limits` (
+|   CREATE TABLE `api_limits` (
 |       `id` INT(11) NOT NULL AUTO_INCREMENT,
 |       `uri` VARCHAR(255) NOT NULL,
 |       `count` INT(10) NOT NULL,
@@ -498,7 +498,7 @@ $config['rest_enable_limits'] = FALSE;
 | table name to match e.g. my_limits
 |
 */
-$config['rest_limits_table'] = 'limits';
+$config['rest_limits_table'] = 'api_limits';
 
 /*
 |--------------------------------------------------------------------------
