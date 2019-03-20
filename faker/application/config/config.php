@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+date_default_timezone_set('Asia/Jakarta');
+
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
@@ -525,3 +527,9 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+
+/* Additional Config */
+$config['api_limit_feed'] = 10;
+$config['api_bulk_limit_feed'] = 100;
+$config['api_max_bulk_limit_feed'] = 1000;
+$config['global_salt'] = '];Qj&0wXUW}7Z';
