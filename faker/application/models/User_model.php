@@ -1,4 +1,10 @@
 <?php if(!defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * Class User_model.php.
+ * Desc: User Model
+ * @author: Sigit Prayitno
+ * @email: cybergitt@gmail.com
+ */
 
 class User_model extends CI_Model
 {
@@ -82,7 +88,150 @@ class User_model extends CI_Model
         return $rs;
     }
 
-	public function proccess_dbase($act, $param = array(), $filter = array()) {
+    // This function used to get list data by this table only, not join table, with like parameters
+    public function get_data_like($arrLike = array(), $arrOrder = array()){
+        $rs = array();
+        //Flush Param
+        $this->db->flush_cache();
+        
+        $this->db->select('user_id, user_key, user_name, user_email, created_at');
+        $this->db->from($this->tbl_users);
+
+        if(empty($arrLike)){
+            $rs = array();
+        }else{
+			foreach ($arrLike as $strField => $strValue){
+				$this->db->like($strField, $strValue);
+			}
+            $query = $this->db->get();
+            $rs = $query->result_array();
+        }
+        
+        //Order By
+        if (count($arrOrder) > 0){
+            foreach ($arrOrder as $strField => $strValue){
+                $this->db->order_by($strField, $strValue);
+            }
+        }
+        
+        return $rs;
+    }
+
+    /**
+     * This function used to get data information by id
+     * @param number $id : This is id
+     * @return array $result : This is data information
+     */
+    public function get_data_info($id)
+    {
+        $this->db->select('*');
+        $this->db->from($this->tbl_users);
+        $this->db->where($this->primKey, $id);
+        $query = $this->db->get();
+        
+        return $query->result();
+    }
+    
+    /**
+     * This function is used to add new data to system
+     * @return number $insert_id : This is last inserted id
+     */
+    public function insert_data($dataPost)
+    {
+		try {
+			$query = $this->db->insert($this->tbl_users, $dataPost);
+			$insert_id = $this->db->insert_id();
+			if ($query === FALSE){
+                throw new Exception();
+			}else{
+				return array(TRUE, $insert_id);
+			}
+				
+        } catch (Exception $e) {
+            $errNo = $this->db->_error_number();
+            return array(FALSE, $errNo);
+        }
+    }
+    
+    /**
+     * This function is used to add new data to system
+	 * Use Transactions only for inserting multiple data
+     * @return number $insert_id : This is last inserted id
+     */
+    public function insert_bulk_data($dataPost)
+    {
+		try {
+			$this->db->trans_start();
+			$query = $this->db->insert($this->tbl_users, $dataPost);
+			$this->db->trans_complete();
+			$insert_id = 0;
+			if ($this->db->trans_status() === FALSE)
+			{
+				$this->db->trans_rollback();
+			}
+			else
+			{
+				// $insert_id = $this->db->insert_id();
+				$insert_id = $this->db->affected_rows();
+				$this->db->trans_commit();
+			}
+			if ($query === FALSE){
+                throw new Exception();
+			}else{
+				return array(TRUE, $insert_id);
+			}
+				
+        } catch (Exception $e) {
+            $errNo = $this->db->_error_number();
+            return array(FALSE, $errNo);
+        }
+    }
+
+    /**
+     * This function is used to update the data information
+     * @param array $dataInfo : This is data updated information
+     * @param number $id : This is data id
+     */
+    public function update_data($dataPost, $id)
+    {
+		try {
+			$query = $this->db->update($this->tbl_users, $dataPost, array($this->indexKey => $id));
+			$affected_rows = $this->db->affected_rows();
+		
+			if ($query === FALSE){
+				throw new Exception();
+			}else{
+				return array(TRUE, $affected_rows);
+			}
+        } catch (Exception $e) {
+            $errNo = $this->db->_error_number();
+            return array(FALSE, $errNo);
+        }
+    }
+    
+    /**
+     * This function is used to delete the data information
+     * @param number $id : This is data id
+     * @return boolean $result : TRUE / FALSE
+     */
+    public function delete_data($id)
+    {
+		try {
+			$query = $this->db->delete($this->tbl_users, array($this->indexKey => $id));
+			$affected_rows = $this->db->affected_rows();
+		
+			if ($query === FALSE){
+				throw new Exception();
+			}else{
+				return array(TRUE, $affected_rows);
+			}
+        } catch (Exception $e) {
+            $errNo = $this->db->_error_number();
+            return array(FALSE, $errNo);
+        }
+    }
+
+	public function process_dbase($act, $param = array(), $filter = array()) {
         try {
 			$affected_rows = 0;
             switch ($act):
@@ -107,6 +256,7 @@ class User_model extends CI_Model
 					$this->db->trans_begin();
                     $query = $this->db->update($this->tbl_users, $param, array($this->indexKey => $filter['ukey']));
 					$this->db->trans_complete();
+					$updated_id = 0;
 					if ($this->db->trans_status() === FALSE)
 					{
 						$this->db->trans_rollback();
@@ -114,8 +264,9 @@ class User_model extends CI_Model
 					else
 					{
 						$this->db->trans_commit();
+						$updated_id = $this->db->affected_rows();
 					}
-					$affected_rows = $this->db->affected_rows();
+					$affected_rows = $updated_id;
                     break;
 
                 case "delete":
@@ -144,6 +295,26 @@ class User_model extends CI_Model
             return $errNo;
         }
 	}
-	
-	
+
+    /**
+     * This function is used to check whether field is already exist or not
+     * @param {mixed} $arrWhere : This is param
+     */
+    public function check_data_exists($arrWhere = array())
+    {
+         //Flush Param
+         $this->db->flush_cache();
+         $this->db->from($this->tbl_users);
+         //Criteria
+         if (count($arrWhere) > 0){
+             foreach ($arrWhere as $strField => $strValue){
+                 if (is_array($strValue)){
+                     $this->db->where_in($strField, $strValue);
+                 }else{
+                     $this->db->where($strField, $strValue);
+                 }
+             }
+         }
+         return $this->db->count_all_results();
+    }
 }
