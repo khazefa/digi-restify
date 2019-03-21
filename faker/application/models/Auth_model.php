@@ -18,7 +18,7 @@ class Auth_model extends CI_Model
 	 */
 	function auth_default($username, $password)
 	{
-		$this->db->select('u.user_id, u.user_key, u.user_pass');
+		$this->db->select('u.user_id, u.user_key, u.user_pass, u.user_name, u.user_email');
 		$this->db->from($this->tbl_users.' as u');
 		$this->db->where('u.user_key', $username);
 		$query = $this->db->get();
@@ -43,7 +43,7 @@ class Auth_model extends CI_Model
 	 */
 	function auth_email($email, $password)
 	{
-		$this->db->select('u.user_id, u.user_email, u.user_pass');
+		$this->db->select('u.user_id, u.user_email, u.user_pass, u.user_name, u.user_email');
 		$this->db->from($this->tbl_users.' as u');
 		$this->db->where('u.user_email', $email);
 		$query = $this->db->get();
