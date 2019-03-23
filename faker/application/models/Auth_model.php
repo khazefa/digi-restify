@@ -86,13 +86,19 @@ class Auth_model extends CI_Model
 	 */
 	function reset_password_user($data)
 	{
-		$result = $this->db->insert('reset_password', $data);
-
-		if($result) {
-			return TRUE;
-		} else {
-			return FALSE;
-		}
+		try {
+			$query = $this->db->insert('reset_password', $data);
+			$insert_id = $this->db->insert_id();
+			if ($query === FALSE){
+                throw new Exception();
+			}else{
+				return array(TRUE, $insert_id);
+			}
+				
+        } catch (Exception $e) {
+            $errNo = $this->db->_error_number();
+            return array(FALSE, $errNo);
+        }
 	}
 
 	/**
