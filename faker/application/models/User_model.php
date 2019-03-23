@@ -16,6 +16,14 @@ class User_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
+	}
+	
+	public function json() {
+        $this->datatables->select('user_id, user_key, user_name, user_email, created_at');
+        $this->datatables->from($this->tbl_users);
+        // $this->datatables->join('country', 'city.CountryCode = country.Code');
+        $this->datatables->add_column('view', '<a href="users/edit/$1">edit</a> | <a href="users/delete/$1">delete</a>', 'user_id');
+        return $this->datatables->generate();
     }
  
     public function get_total_rows()
@@ -231,6 +239,7 @@ class User_model extends CI_Model
         }
     }
 
+	// This function is purposed for experimental only //cybgt
 	public function process_dbase($act, $param = array(), $filter = array()) {
         try {
 			$affected_rows = 0;
