@@ -55,7 +55,8 @@ class Authentication extends REST_Controller
      */
     function reset_pass_post()
     {
-        $email = filter_var($this->input->post('email', TRUE), FILTER_SANITIZE_EMAIL);
+		$email = filter_var($this->input->post('email', TRUE), FILTER_SANITIZE_EMAIL);
+		$url = filter_var($this->input->post('url', TRUE), FILTER_SANITIZE_URL);
         
         if($this->m_auth->check_email_exist($email))
         {
@@ -71,42 +72,34 @@ class Authentication extends REST_Controller
             
             if($save)
             {
-                $data1['reset_link'] = $this->config->item('frontend') . "reset_pass_confirm/" . $data['activation_id'] . "/" . $encoded_email;
-                $userInfo = $this->MLog->get_info_by_email($email);
+                $data_reset['reset_link'] = $url . "/" . $data['activation_id'] . "/" . $encoded_email;
+                $userInfo = $this->m_auth->get_info_by_email($email);
 
                 if(!empty($userInfo)){
-                    $data1["name"] = $userInfo[0]->user_fullname;
-                    $data1["email"] = $userInfo[0]->user_email;
-                    $data1["message"] = "Reset Your Password";
+                    $data_reset["name"] = $userInfo[0]->user_name;
+                    $data_reset["email"] = $userInfo[0]->user_email;
+                    $data_reset["message"] = "Reset Password Instructions";
                 }
 
-                $sendStatus = resetPasswordEmail($data1);
-
-                if($sendStatus){
-                    $this->response([
-                        'status' => TRUE,
-                        'message' => 'Reset password link sent successfully, please check your email.'
-                    ], REST_Controller::HTTP_OK);
-                } else {
-                    $this->response([
-                        'status' => FALSE,
-                        'message' => 'Email has been failed, try again.'
-                    ], REST_Controller::HTTP_OK);
-                }
+				$this->response([
+					'status' => TRUE,
+					'results' => $data_reset,
+					'message' => 'Please use this data for email content.'
+				], REST_Controller::HTTP_OK);
             }
             else
             {
                 $this->response([
                     'status' => FALSE,
-                    'message' => 'It seems an error while sending your details, try again.'
-                ], REST_Controller::HTTP_OK);
+					'message' => 'failure some error occured:'.$result[1]
+                ], REST_Controller::HTTP_BAD_REQUEST);
             }
         }
         else
         {
             $this->response([
                 'status' => FALSE,
-                'message' => 'Your email is not registered with us.'
+                'message' => 'If your email is already registered with our system, we will send you the confirmation email'
             ], REST_Controller::HTTP_OK);
         }
     }
@@ -115,13 +108,13 @@ class Authentication extends REST_Controller
     function reset_pass_confirm_get()
     {
         // Get email and activation code from URL values at index 3-4
-        $activation_id = $this->get('activation_id');
-        $email = $this->get('email');
+        $activation_id = $this->input->get('activation_id', TRUE);
+		$email = filter_var($this->input->get('email', TRUE), FILTER_SANITIZE_EMAIL);
 
         $email = urldecode($email);
         
         // Check activation id in database
-        $is_correct = $this->MLog->check_activation_details($email, $activation_id);
+        $is_correct = $this->m_auth->check_activation_details($email, $activation_id);
         
         $data['email'] = $email;
         $data['activation_code'] = $activation_id;
@@ -132,35 +125,33 @@ class Authentication extends REST_Controller
                 'status' => TRUE,
                 'email' => $email,
                 'activation_code' => $activation_id,
-                'message' => 'This email is registered with us.'
+                'message' => 'This email is registered with our system.'
             ], REST_Controller::HTTP_OK);
         }
         else
         {
             $this->response([
                 'status' => TRUE,
-                'message' => 'This email is not registered with us.'
-            ], REST_Controller::HTTP_OK);
+                'message' => 'This email is not registered with our system.'
+            ], REST_Controller::HTTP_BAD_REQUEST);
         }
     }
     
     // This function used to create new password
     function create_pass_post()
     {
-        $status = '';
-        $message = '';
-        $femail = $this->input->post("femail", TRUE);
+		$email = filter_var($this->input->post('email', TRUE), FILTER_SANITIZE_EMAIL);
         $activation_id = $this->input->post("activation_code");
 
         $password = $this->input->post('password', TRUE);
         $cpassword = $this->input->post('cpassword', TRUE);
         
         // Check activation id in database
-        $is_correct = $this->MLog->check_activation_details($email, $activation_id);
+        $is_correct = $this->m_auth->check_activation_details($email, $activation_id);
         
         if($is_correct == 1)
         {                
-            $this->MLog->create_password($email, $password);
+            $this->m_auth->create_password($email, $password);
             $this->response([
                 'status' => TRUE,
                 'message' => 'Password changed successfully'
@@ -168,11 +159,11 @@ class Authentication extends REST_Controller
         }
         else
         {
-            $this->MLog->create_password($email, $password);
+            $this->m_auth->create_password($email, $password);
             $this->response([
                 'status' => TRUE,
                 'message' => 'Password changed failed'
-            ], REST_Controller::HTTP_OK);
+            ], REST_Controller::HTTP_BAD_REQUEST);
         }
     }
 
