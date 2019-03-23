@@ -17,7 +17,7 @@ class User extends REST_Controller
         $this->methods['user_delete']['limit'] = 2; // 2 requests per hour per user/key
 	}
 
-	public function json_get() {
+	public function list_json_get() {
         $results = $this->m_user->json();
 		$this->response([
 			'status' => TRUE,
