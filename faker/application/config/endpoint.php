@@ -12,7 +12,7 @@ $locallist = array(
 );
 
 if(!in_array($_SERVER['REMOTE_ADDR'], $locallist)){
-	define('master', "http://galandro.solusiintermedia.com/amb/");
+	define('master', "http://api.solusiintermedia.com/gpos/");
 }else{
 	define('master', "http://localhost/digi-restify/");
 }
