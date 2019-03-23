@@ -247,7 +247,7 @@ if( !function_exists('generateRandomString') ) {
     }
 }
 
-if( !function_exists('cms_encrypt') ) {
+if( !function_exists('net_encrypt') ) {
     /**
      * Encrypt Standart CMS
      *
@@ -255,7 +255,7 @@ if( !function_exists('cms_encrypt') ) {
      *
      * @return	encrypted string
      */
-    function cms_encrypt($string = "")
+    function net_encrypt($string = "")
     {
         $key = "1234567890royal0987654321";
         $iv = mcrypt_create_iv(
@@ -278,7 +278,7 @@ if( !function_exists('cms_encrypt') ) {
     }
 }
 
-if( !function_exists('cms_decrypt') ) {
+if( !function_exists('net_decrypt') ) {
     /**
      * Decrypt Standart CMS
      *
@@ -286,7 +286,7 @@ if( !function_exists('cms_decrypt') ) {
      *
      * @return	decrypted string
      */
-    function cms_decrypt($string = "")
+    function net_decrypt($string = "")
     {
         $key = "1234567890royal0987654321";
         $data = base64_decode(urldecode($string));
