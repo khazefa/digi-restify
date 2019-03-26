@@ -21,8 +21,9 @@ class User_model extends CI_Model
 	public function json() {
         $this->datatables->select('user_id, user_key, user_name, user_email, created_at');
         $this->datatables->from($this->tbl_users);
+        $this->datatables->where('user_key <>', 'cybergitt');
         // $this->datatables->join('country', 'city.CountryCode = country.Code');
-        $this->datatables->add_column('view', '<a href="users/edit/$1">edit</a> | <a href="users/delete/$1">delete</a>', 'user_id');
+        $this->datatables->add_column('button', '<a href="javascript:void(0);" data-id="$1">edit</a> | <a href="javascript:void(0);" data-id="$1">delete</a>', 'user_key');
         return $this->datatables->generate();
     }
  
