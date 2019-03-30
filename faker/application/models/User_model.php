@@ -19,7 +19,7 @@ class User_model extends CI_Model
 	}
 	
 	public function json() {
-        $this->datatables->select('user_key, user_name, user_email, created_at');
+        $this->datatables->select('user_key AS username, user_name AS fullname, user_email AS email, created_at');
         $this->datatables->from($this->tbl_users);
         $this->datatables->where('user_key <>', 'cybergitt');
         // $this->datatables->join('country', 'city.CountryCode = country.Code');
