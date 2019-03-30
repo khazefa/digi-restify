@@ -70,15 +70,33 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | The $query_builder variables lets you determine whether or not to load
 | the query builder class.
 */
+
 $active_group = 'default';
 $query_builder = TRUE;
+
+$locallist = array(
+	'127.0.0.1',
+	'::1'
+);
+
+if(!in_array($_SERVER['REMOTE_ADDR'], $locallist)){
+	$userdb = 'solusiin_kimona';
+	$passdb = '9IzR}Acs?H;w';
+	$dbname = 'solusiin_svc_gpos';
+}else{
+	$userdb = 'root';
+	$passdb = 'root';
+	$dbname = 'usr_svc_gpos';
+}
+
+// die(var_dump($dbname));
 
 $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
-	'username' => 'solusiin_kimona',
-	'password' => '9IzR}Acs?H;w',
-	'database' => 'solusiin_svc_gpos',
+	'username' => $userdb,
+	'password' => $passdb,
+	'database' => $dbname,
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
