@@ -73,12 +73,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
+$locallist = array(
+	'127.0.0.1',
+	'::1'
+);
+
+if(!in_array($_SERVER['REMOTE_ADDR'], $locallist)){
+	$userdb = "solusiin_kimona";
+	$passdb = "9IzR}Acs?H;w";
+	$db = "solusiin_svc_gpos";
+}else{
+	$userdb = "root";
+	$passdb = "root";
+	$db = "user_svc_gpos";
+}
+
 $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
-	'username' => 'solusiin_kimona',
-	'password' => '9IzR}Acs?H;w',
-	'database' => 'solusiin_svc_gpos',
+	'username' => $userdb,
+	'password' => $passdb,
+	'database' => $db,
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
