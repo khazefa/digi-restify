@@ -85,7 +85,7 @@ if(!in_array($_SERVER['REMOTE_ADDR'], $locallist)){
 	$dbname = 'solusiin_svc_gpos';
 }else{
 	$userdb = 'root';
-	$passdb = 'root';
+	$passdb = '';
 	$dbname = 'usr_svc_gpos';
 }
 
