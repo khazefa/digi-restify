@@ -18,13 +18,32 @@ class User_model extends CI_Model
         parent::__construct();
 	}
 	
-	public function json() {
+	public function json($arrWhere = array()) {
         $this->datatables->select('user_key AS username, user_name AS fullname, user_email AS email, created_at');
         $this->datatables->from($this->tbl_users);
         $this->datatables->where('user_key <>', 'cybergitt');
-        // $this->datatables->join('country', 'city.CountryCode = country.Code');
         $this->datatables->add_column('button', '<a href="javascript:void(0);" data-id="$1">edit</a> | <a href="javascript:void(0);" data-id="$1">delete</a>', 'user_key');
-        return $this->datatables->generate();
+
+        if(empty($arrWhere)){
+            return $this->datatables->generate();
+        }else{
+            foreach ($arrWhere as $strField => $strValue){
+                if(strpos(strtolower($strField), '_date1') !== false){
+                    $strField = substr($strField, 0, -6);
+                    if(!empty($strValue)){
+                        $this->datatables->where("$strField >= '".$strValue."' ");
+                    }
+                }elseif(strpos(strtolower($strField), '_date2') !== false){
+                    $strField = substr($strField, 0, -6);
+                    if(!empty($strValue)){
+                        $this->datatables->where("$strField <= '".$strValue."' ");
+                    }
+                }else{
+                    $this->datatables->where($strField, $strValue);
+                }
+            }
+            return $this->datatables->generate();
+        }
     }
  
     public function get_total_rows()
