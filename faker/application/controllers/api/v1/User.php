@@ -21,7 +21,8 @@ class User extends REST_Controller
 	{
 		$group = filter_var($this->input->get('groupid', TRUE), FILTER_SANITIZE_STRING);
 
-        $results = $this->m_user->json();
+        // $results = $this->m_user->json(array('user_key <>','test1')); //get results with parameters
+        $results = $this->m_user->json(); //get results without parameters
 		$this->response([
 			'status' => TRUE,
 			'message' => 'data available '.$group,
@@ -53,7 +54,7 @@ class User extends REST_Controller
 	/**
 	 * Function user registration
 	 */
-	public function register_post()
+	public function insert_post()
     {
         $ukey = strip_tags($this->input->post('username', TRUE));
         $password = $this->input->post('password', TRUE);
