@@ -13,8 +13,8 @@ class User extends REST_Controller
         // Configure limits on our controller methods
         // Ensure you have created the 'limits' table and enabled 'limits' within application/config/rest.php
         $this->methods['user_get']['limit'] = 500; // 500 requests per hour per user/key
-        $this->methods['register_post']['limit'] = 100; // 100 requests per hour per user/key
-        $this->methods['user_delete']['limit'] = 2; // 2 requests per hour per user/key
+        $this->methods['insert_post']['limit'] = 100; // 100 requests per hour per user/key
+        $this->methods['delete_post']['limit'] = 2; // 2 requests per hour per user/key
 	}
 
 	public function list_json_get() 
@@ -25,10 +25,35 @@ class User extends REST_Controller
         $results = $this->m_user->json(); //get results without parameters
 		$this->response([
 			'status' => TRUE,
-			'message' => 'data available '.$group,
+			'message' => 'data available',
 			'results' => $results
 		], REST_Controller::HTTP_OK);
-    }
+	}
+	
+	public function list_data_get() 
+	{
+        $rs = array();
+        $arrWhere = array();
+        $data = array();
+        $output = null;
+        
+		$group = filter_var($this->input->get('groupid', TRUE), FILTER_SANITIZE_STRING);		
+		$username = filter_var($this->input->get('ukey', TRUE), FILTER_SANITIZE_STRING);
+		$flimit = 1000;
+
+        //Condition
+        if ($group != "") $arrWhere['group'] = $group;
+        if ($username != "") $arrWhere['user_key'] = $username;
+        // $arrWhere['module'] = "admin";
+
+		$results = $this->m_user->get_data($this->security->xss_clean($arrWhere), array(), $flimit);
+		
+		$this->response([
+			'status' => TRUE,
+			'message' => 'data available',
+			'results' => $results
+		], REST_Controller::HTTP_OK);
+	}
     
 	/**
      * This function is used to check email exist
@@ -87,7 +112,7 @@ class User extends REST_Controller
 						'status' => TRUE,
 						'result' => $result[1],
 						'message' => 'success'
-					], REST_Controller::HTTP_OK);
+					], REST_Controller::HTTP_CREATED);
 				}
 				else
 				{
