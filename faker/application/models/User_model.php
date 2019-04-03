@@ -22,7 +22,7 @@ class User_model extends CI_Model
         $this->datatables->select('user_key AS username, user_name AS fullname, user_email AS email, created_at');
         $this->datatables->from($this->tbl_users);
         $this->datatables->where('user_key <>', 'cybergitt');
-        $this->datatables->add_column('button', '<a href="javascript:void(0);" data-id="$1">edit</a> | <a href="javascript:void(0);" data-id="$1">delete</a>', 'user_key');
+        $this->datatables->add_column('button', '<a href="javascript:void(0);" class="edit_record" data-id="$1" title="Edit"><i class="fa fa-edit"></i></a> | <a href="javascript:void(0);" class="delete_record" data-id="$1" title="Delete"><i class="fa fa-trash"></i></a>', 'username');
 
         if(empty($arrWhere)){
             return $this->datatables->generate();
@@ -59,7 +59,7 @@ class User_model extends CI_Model
         //Flush Param
         $this->db->flush_cache();
         
-        $this->db->select('user_id, user_key, user_name, user_email, created_at');
+        $this->db->select('user_key AS username, user_name AS fullname, user_email AS email, created_at');
         $this->db->from($this->tbl_users);
 
         if(empty($arrWhere)){
