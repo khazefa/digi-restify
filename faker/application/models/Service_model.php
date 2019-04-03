@@ -7,10 +7,10 @@
 	* @email: cybergitt@gmail.com
 	*/
 
-	class Vendor_model extends CI_Model{
-		private $tbl_vendors = 'vendor';
-		private $primKey = 'vendor_id';
-		private $indexKey = 'vendor_code';
+	class Service_model extends CI_Model{
+		private $tbl_services = 'services';
+		private $primKey = 'services_id';
+		private $indexKey = 'services_code';
 		//private $order = array('user_name' => 'asc'); // default order
 
 		public function __construct()
@@ -19,22 +19,22 @@
 		}
 		
 		public function json() {
-			$this->datatables->select('vendor_code AS ven_cd, vendor_name AS ven_nm, vendor_owner AS owner, created_at');
-			$this->datatables->from($this->tbl_vendors);
+			$this->datatables->select('services_code AS serv_cd, services_name AS serv_nm');
+			$this->datatables->from($this->tbl_services);
 			//$this->datatables->where('user_key <>', 'cybergitt');
 			// $this->datatables->join('country', 'city.CountryCode = country.Code');
-			$this->datatables->add_column('button', '<a href="javascript:void(0);" data-id="$1">edit</a> | <a href="javascript:void(0);" data-id="$1">delete</a>', 'vendor_code');
+			$this->datatables->add_column('button', '<a href="javascript:void(0);" data-id="ven_cd">edit</a> | <a href="javascript:void(0);" data-id="$1">delete</a>', 'services_code');
 			return $this->datatables->generate();
 		}
 	 
 		public function get_total_rows(){
-			$this->db->from($this->tbl_vendors);
+			$this->db->from($this->tbl_services);
 			return $this->db->count_all_results();
 		}
 
     public function insert_data($dataPost){
 			try {
-				$query = $this->db->insert($this->tbl_vendors, $dataPost);
+				$query = $this->db->insert($this->tbl_services, $dataPost);
 				$insert_id = $this->db->insert_id();
 				if ($query === FALSE){
 					throw new Exception();
@@ -52,7 +52,7 @@
     
 		public function update_data($dataPost, $id){
 			try {
-				$query = $this->db->update($this->tbl_vendors, $dataPost, array($this->indexKey => $id));
+				$query = $this->db->update($this->tbl_services, $dataPost, array($this->indexKey => $id));
 				$affected_rows = $this->db->affected_rows();
 			
 				if ($query === FALSE){
@@ -70,7 +70,7 @@
     
     public function delete_data($id){
 			try {
-				$query = $this->db->delete($this->tbl_vendors, array($this->indexKey => $id));
+				$query = $this->db->delete($this->tbl_services, array($this->indexKey => $id));
 				$affected_rows = $this->db->affected_rows();
 			
 				if ($query === FALSE){
@@ -89,7 +89,7 @@
     public function check_data_exists($arrWhere = array()){
 			//Flush Param
 			$this->db->flush_cache();
-			$this->db->from($this->tbl_vendors);
+			$this->db->from($this->tbl_services);
 			//Criteria
 			if (count($arrWhere) > 0){
 				foreach ($arrWhere as $strField => $strValue){
